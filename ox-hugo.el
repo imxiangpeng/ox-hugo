@@ -1850,8 +1850,8 @@ a communication channel."
                   bullet " " heading tags "\n\n"
                   (and contents (replace-regexp-in-string "^" "    " contents)))))
        (t
-        (let* ((anchor (format "{#%s}" ;https://gohugo.io/extras/crossreferences/
-                               (org-hugo--get-anchor headline info)))
+	 ;; mxp, 20211212, we do not want to add anchor after title
+        (let* ((anchor "")
                (headline-title (org-hugo--headline-title style level loffset title
                                                          todo-fmtd anchor numbers))
                (content-str (or (org-string-nw-p contents) "")))
