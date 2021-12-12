@@ -2057,7 +2057,9 @@ a communication channel."
                   bullet " " heading tags-fmtd "\n\n"
                   (and contents (replace-regexp-in-string "^" "    " contents)))))
        (t
-        (let* ((anchor (format "{#%s}" (org-hugo--get-anchor heading info))) ;https://gohugo.io/extras/crossreferences/
+        ;;(let* ((anchor (format "{#%s}" (org-hugo--get-anchor heading info))) ;https://gohugo.io/extras/crossreferences/
+        ;; mxp, 20211212, we do not want to add anchor after title
+        (let* ((anchor "")
                (heading-title (org-hugo--heading-title style level loffset title
                                                        todo-fmtd tags-fmtd anchor numbers))
                (wrap-element (org-hugo--container heading info))
