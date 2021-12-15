@@ -2151,7 +2151,7 @@ a communication channel."
                                       heading info))))
                          ".")))
               (heading (concat todo-fmtd " " priority title))) ;Heading text without tags
-          (concat "<!--list-separator-->\n\n"
+          (concat ;;"<!--list-separator-->\n\n"
                   ;; Above is needed just in case the body of the
                   ;; section above is ending with a plain list. That
                   ;; HTML comment will force-end the <ul> or <ol> tag
