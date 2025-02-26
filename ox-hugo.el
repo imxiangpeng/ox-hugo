@@ -240,6 +240,9 @@ Dummy Org file paths are created in
 `org-hugo--get-pre-processed-buffer' by appending this variable
 to the link targets out of the current subtree scope.")
 
+;; mxp, 20250225, prefer using native link
+(defvar org-hugo--prefer-md-link-style nil
+  "Prefer using markdown native link.")
 
 ;;; Obsoletions
 
@@ -2793,7 +2796,9 @@ and rewrite link paths to make blogging more seamless."
                                  anchor
                                (concat path anchor))))
                    ;; (message "[org-hugo-link DBG] plain-text org-id anchor: %S" anchor)
-                   (format "[%s]({{< relref \"%s\" >}})" (or desc path) ref))
+                   (if org-hugo--prefer-md-link-style
+                       (format "[%s](%s)" (or desc path) ref)
+                     (format "[%s]({{< relref \"%s\" >}})" (or desc path) ref)))
                (if desc
                    (format "[%s](%s)" desc path)
                  (format "<%s>" path)))))
@@ -2926,7 +2931,11 @@ and rewrite link paths to make blogging more seamless."
               ;; (message "[org-hugo-link DBG] svg contents sanitized: %s" svg-contents-sanitized)
               svg-html)
           (let* ((path (org-hugo--attachment-rewrite-maybe raw-path info))
-                 (inline-image (not (org-html-standalone-image-p useful-parent info)))
+                 ;;(inline-image (not (org-html-standalone-image-p useful-parent info)))
+                 ;; mxp, 20250225, always use inline image
+                 (inline-image (if org-hugo--prefer-md-link-style
+                                   t
+                                 (not (org-html-standalone-image-p useful-parent info))))
                  (source (if link-is-url
                              (concat type ":" path)
                            path))
