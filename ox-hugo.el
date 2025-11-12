@@ -3245,6 +3245,16 @@ INFO is a plist used as a communication channel."
                        (expand-file-name "static" hugo-base-dir))))
          (dest-dir (or bundle-dir static-dir))
          ret)
+
+    ;; (message "[ox-hugo DBG attch rewrite] pub folder dir is: %s" pub-dir)
+    ;; (message "[ox-hugo DBG attch rewrite] content folder dir is: %s" org-hugo-content-folder)
+    ;; (message "[ox-hugo DBG attch rewrite] section folder dir is: %s" (plist-get info :hugo-bundle))
+    (when org-hugo--prefer-md-link-style
+        (progn
+          ;;(setq dest-dir (file-name-as-directory (expand-file-name "static" pub-dir)))
+          (setq dest-dir pub-dir)
+          (setq static-dir pub-dir)))
+
     (unless (file-directory-p static-dir)
       (user-error "Please create the %s directory" static-dir))
     ;; (message "[ox-hugo DBG attch rewrite] Image export dir is: %s" static-dir)
@@ -3300,6 +3310,10 @@ INFO is a plist used as a communication channel."
                         ;; "/foo/bar/baz.png", return "baz.png".
                         ;; (message "[ox-hugo DBG attch rewrite BUNDLE 3] attch neither in static nor in Org file dir")
                         (file-name-nondirectory path-unhexified))))
+                     (org-hugo--prefer-md-link-style
+                      (concat
+                       (file-name-as-directory "assets")
+                       (file-name-nondirectory path-unhexified)))
                      (t
                       ;; Else, `path-true' is "/foo/bar/baz.png",
                       ;; return "ox-hugo/baz.png".  "ox-hugo" is the
@@ -3327,8 +3341,9 @@ INFO is a plist used as a communication channel."
               (when (file-newer-than-file-p path-true dest-path)
                 (message "[ox-hugo] Copied %S to %S" path-true dest-path)
                 (copy-file path-true dest-path :ok-if-already-exists))
-              (setq ret (if (and bundle-dir
+              (setq ret (if (or (and bundle-dir
                                  (string= bundle-dir dest-dir))
+                                org-hugo--prefer-md-link-style)
                             ;; If attachments are copied to the bundle
                             ;; directory, don't prefix the path as "/"
                             ;; as those paths won't exist at the site
